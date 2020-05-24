@@ -1,3 +1,4 @@
+library("rvest")
 url<-"https://www.amazon.es/s?k=aspiradora&__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&ref=nb_sb_noss"
 selector<-"div.sg-col-4-of-24:nth-child(8) > div:nth-child(1) > span:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > h2:nth-child(1) > a:nth-child(1)"
 pagina<-read_html(url)
@@ -10,7 +11,7 @@ nodo_links
 url_completa<-paste0("www.amazon.es",nodo_links)
 url_completa
 
-https://www.amazon.es/s?k=aspiradora&page=2&__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&qid=1589692311&ref=sr_pg_2
+
 library(stringr)
 pag<-"s?k=aspiradora&page=2&__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&qid=1559659201&ref=sr_pg_2"
 lista_paginas<-c(1:10)
@@ -28,9 +29,6 @@ dameLinksPagina<-function(url){
   nodo_links
   
 }
-
-paginas[3]
-test<-dameLinksPagina(paginas[3])
 
 linksAsp<-sapply(paginas, dameLinksPagina)
 class(linksAsp)
@@ -74,6 +72,7 @@ resultado_aspiradoras<-c(nombre_texto,precio_texto,opiniones_texto,as.character(
 getArticulo<-function(url){
   print(url)
   # nombre del producto
+  
   selectorNombre<-"#productTitle"
   pagina_web<-read_html(url)
   nombre_nodo<-html_node(pagina_web,selectorNombre)
@@ -103,7 +102,7 @@ getArticulo<-function(url){
    
   }
   col<-c("Peso de Producto","Dimensiones de Producto","Volumen","Potencia")
-  if(length(res_tabla)==0)
+  if(is.na(tabla_nodo))
   {
     #no hay detalles todo a  -1
     mitab<-data.frame(colnames(col))  
@@ -134,12 +133,21 @@ getArticulo<-function(url){
   
   articulo
 }
-url<-"https://www.amazon.es//Hmeian-Aspiradora-Aspirada-Inal%C3%A1mbrica-Inoxidable/dp/B07YKQGFTR/ref=sr_1_23?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=aspiradora&qid=1589947330&sr=8-23"
-resu<-getArticulo(url)
-resultados_datos<-sapply(vlinkAspiradora,getArticulo)
+# vlinkAspiradora[83]
+# url<-"https://www.amazon.es//BABIFIS-Esterilizar-Anti-%C3%A1caros-Eliminaci%C3%B3n-aspiradoras/dp/B086PDBRPH/ref=sr_1_3?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=aspiradora&qid=1590277392&sr=8-3"
+# getArticulo(url)
+vlinkAspiradora2<-sapply(vlinkAspiradora,trimws)
+# View(vlinkAspiradora2)
+resultados_datos<-sapply(vlinkAspiradora2,getArticulo)
+
 res<-t(resultados_datos)
+# View(res)
 dim(res)
-mis_aspiradoras<-as.data.frame(res)
+
 colnames(res)<-c("Nombre","Precio","Opiniones","Peso del Producto","Dimensiones del Producto","Volumen","Potencia")
-rownames(res)<-c(1:100)
-View(res)
+# !is.na(res[1:160,1])
+resClean<-res[!is.na(res[1:160,1]),]
+#View(resClean)
+#length(resClean[,1])
+rownames(resClean)<-c(1:length(resClean[,1]))
+View(resClean)
