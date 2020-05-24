@@ -54,6 +54,21 @@ aspiradoras$`Dimensiones del Producto`<-gsub(" cm", "", aspiradoras$`Dimensiones
 aspiradoras$`Dimensiones del Producto`<-gsub(",", ".", aspiradoras$`Dimensiones del Producto`)
 library(stringr)
 dimen<-str_split_fixed(aspiradoras$`Dimensiones del Producto`," x ", n=3)
+colnames(dimen)<-c("Alto","Ancho","Profundidad")
+dimen<-as.data.frame(dimen)
+dimen$Alto<-as.character(dimen$Alto)
+dimen$Ancho<-as.character(dimen$Ancho)
+dimen$Profundidad<-as.character(dimen$Profundidad)
+dimen$Alto<-gsub("-1",NA,dimen$Alto)
+
+dimen$Alto<-as.numeric(dimen$Alto)
+dimen$Ancho<-as.numeric(dimen$Ancho)
+dimen$Profundidad<-as.numeric(dimen$Profundidad)
+dimen$Alto[is.na(dimen$Alto)]<-mean(dimen$Alto,na.rm = TRUE)
+dimen$Ancho[is.na(dimen$Ancho)]<-mean(dimen$Ancho,na.rm = TRUE)
+dimen$Profundidad[is.na(dimen$Profundidad)]<-mean(dimen$Profundidad,na.rm = TRUE)
 
 res_limpio<-cbind(aspiradoras, dimen)
 res_limpio<-res_limpio[,-5]
+
+View(res_limpio)
