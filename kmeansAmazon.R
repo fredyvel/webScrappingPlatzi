@@ -19,3 +19,7 @@ dat<-rbind(rep(5,10),rep(-1.5,10),dat)
 radarchart(dat)
 }
 sapply(c(1:8),plotCentros)
+class(data)
+write.csv(data,"/Users/fredyvelasquez/Projects\ R/webScrappingPlatzi/data.csv", row.names = FALSE)
+
+mycluster$centers
