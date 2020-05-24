@@ -1,16 +1,5 @@
+install.packages("rvest")
 library("rvest")
-url<-"https://www.amazon.es/s?k=aspiradora&__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&ref=nb_sb_noss"
-selector<-"div.sg-col-4-of-24:nth-child(8) > div:nth-child(1) > span:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > h2:nth-child(1) > a:nth-child(1)"
-pagina<-read_html(url)
-pagina
-nodo<-html_node(pagina,selector)
-nodo
-nodo_texto<-html_text(nodo)
-nodo_links<-html_attr(nodo,"href")
-nodo_links
-url_completa<-paste0("www.amazon.es",nodo_links)
-url_completa
-
 
 library(stringr)
 pag<-"s?k=aspiradora&page=2&__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&qid=1559659201&ref=sr_pg_2"
@@ -31,43 +20,12 @@ dameLinksPagina<-function(url){
 }
 
 linksAsp<-sapply(paginas, dameLinksPagina)
-class(linksAsp)
 lista<-unlist(linksAsp)
 vlink<-as.vector(lista)
 length(vlink)
 vlinkAspiradora<-paste0("https://www.amazon.es/", vlink)
 vlinkAspiradora[1]
 
-url<-"https://www.amazon.es/dp/B07ZJ5VRZR/ref=sspa_dk_detail_1?psc=1&pd_rd_i=B07ZJ5VRZR&pd_rd_w=EdzFa&pf_rd_p=af12bbbd-c74b-4d8c-ad16-2ed2a7b363ab&pd_rd_wg=p7RoI&pf_rd_r=JDW0KJWD3R140X6MMEFB&pd_rd_r=c614e8bf-bbd9-452f-9402-4bc64a71fafe&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUFBSlAwMjY4RVk3RFomZW5jcnlwdGVkSWQ9QTA4NzI5ODYyRUJJMEgyS0Q0WVU1JmVuY3J5cHRlZEFkSWQ9QTAwNTMzODAzNzBFNzRJOTdZUFQzJndpZGdldE5hbWU9c3BfZGV0YWlsJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ=="
-selectorNombre<-"#productTitle"
-pagina_web<-read_html(url)
-nombre_nodo<-html_node(pagina_web,selectorNombre)
-nombre_texto<-html_text(nombre_nodo)
-nombre_texto
-
-opiniones<-"#acrCustomerReviewText"
-opiniones_nodo<-html_node(pagina_web,opiniones)
-opiniones_texto<-html_text(opiniones_nodo)
-opiniones_texto
-
-precio<-"#priceblock_ourprice"
-precio_nodo<-html_node(pagina_web,precio)
-precio_texto<-html_text(precio_nodo)
-precio_texto
-
-tabla<-"div.column:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > table:nth-child(1)"
-tabla_nodo<-html_node(pagina_web,tabla)
-tabla_tab<-html_table(tabla_nodo)
-class(tabla_tab)
-
-val<-tabla_tab$X2
-val
-res_tabla<-data.frame(t(val))
-res_tabla
-tabla_name<-tabla_tab$X1
-colnames(res_tabla) <-tabla_name
-str(res_tabla)
-resultado_aspiradoras<-c(nombre_texto,precio_texto,opiniones_texto,as.character(res_tabla$`Peso del producto`),as.character(res_tabla$Potencia),as.character(res_tabla$`Dimensiones del producto`),as.character(res_tabla$Capacidad))
 
 getArticulo<-function(url){
   print(url)
@@ -136,7 +94,7 @@ getArticulo<-function(url){
 # vlinkAspiradora[83]
 # url<-"https://www.amazon.es//BABIFIS-Esterilizar-Anti-%C3%A1caros-Eliminaci%C3%B3n-aspiradoras/dp/B086PDBRPH/ref=sr_1_3?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=aspiradora&qid=1590277392&sr=8-3"
 # getArticulo(url)
-vlinkAspiradora2<-sapply(vlinkAspiradora,trimws)
+# vlinkAspiradora2<-sapply(vlinkAspiradora,trimws)
 # View(vlinkAspiradora2)
 resultados_datos<-sapply(vlinkAspiradora2,getArticulo)
 
@@ -146,8 +104,8 @@ dim(res)
 
 colnames(res)<-c("Nombre","Precio","Opiniones","Peso del Producto","Dimensiones del Producto","Volumen","Potencia")
 # !is.na(res[1:160,1])
-resClean<-res[!is.na(res[1:160,1]),]
-#View(resClean)
+resClean<-res[!is.na(res[,1]),]
+#View(res[,1])
 #length(resClean[,1])
 rownames(resClean)<-c(1:length(resClean[,1]))
 View(resClean)
